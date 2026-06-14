@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model clientes {
+  id       Int      @id @default(autoincrement())
+  cedula   String   @unique @db.VarChar(50)
+  nombre   String?  @db.VarChar(250)
+  telefono String?  @db.VarChar(50)
+  status   String   @default("pago_pendiente") @db.VarChar(50)
+  ventas   ventas[]
+}
+
+model productos {
+  id         Int      @id @default(autoincrement())
+  nombre     String?  @db.VarChar(250)
+  precio_usd Decimal? @db.Decimal(12, 2)
+  stock      Int?
+  categoria  String?  @db.VarChar(250)
+  status     String   @default("disponible") @db.VarChar(50)
+  ventas     ventas[]
+}
+
+model tasa_moneda {
+  id         Int       @id @default(autoincrement())
+  moneda     String?   @default("Bs") @db.VarChar(50)
+  tasa_usd   Decimal?  @db.Decimal(12, 6)
+  tasa_euro  Decimal?  @db.Decimal(12, 6)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+  ventas     ventas[]
+}
+
+model ventas {
+  id              Int         @id @default(autoincrement())
+  clientes_id     Int
+  productos_id    Int
+  tasa_moneda_id  Int
+  cantidad        Int         @default(1)
+  precio_unitario Decimal     @db.Decimal(12, 2)
+  total           Decimal?    @default(dbgenerated("((cantidad)::numeric * precio_unitario)")) @db.Decimal(14, 2)
+  status          String      @default("no_pagada") @db.VarChar(50)
+  created_at      DateTime?   @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?   @default(now()) @db.Timestamptz(6)
+  clientes        clientes    @relation(fields: [clientes_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_c_compra")
+  productos       productos   @relation(fields: [productos_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_p_venta")
+  tasa_moneda     tasa_moneda @relation(fields: [tasa_moneda_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tasas_cambio")
+}
