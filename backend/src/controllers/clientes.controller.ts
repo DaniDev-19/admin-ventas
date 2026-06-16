@@ -1,19 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ClientesService } from '../services/clientes.services';
-
-const enrichAndNext = (err: unknown, next: NextFunction) => {
-    if (err && typeof err === "object") {
-        const name = (err as any).name;
-        if (name === "ValidationError") {
-            (err as any).status = 400;
-        } else if (name === "NotFoundError") {
-            (err as any).status = 404;
-        } else if (name === "ConflictError") {
-            (err as any).status = 409;
-        }
-        next(err);
-    }
-};
+import { enrichAndNext } from '../utils/nextError';
 
 export const getClientesAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -33,12 +20,6 @@ export const getClientesAll = async (req: Request, res: Response, next: NextFunc
             message: "Clientes obtenidos exitosamente",
             timeResponseMs: durationMs,
             timeResponseISO: new Date().toISOString(),
-            currentpage: {
-                page: result.page,
-                limit: result.limit,
-                skip: (result.page - 1) * result.limit,
-                total: result.total,
-            },
         });
     }catch(err) {
         enrichAndNext(err, next);

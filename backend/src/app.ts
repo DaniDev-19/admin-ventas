@@ -8,7 +8,7 @@ import { notFoundHandler, unauthorizedHandler, globalErrorHandler } from './midd
 import dbMiddleware from './middleware/db_conex';
 
 import clientRoutes from "./routes/clientes.routes";
-
+import ProductRoutes from "./routes/product.routes";
 
 const app = express();
 
@@ -30,12 +30,12 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use("/api/clients", clientRoutes);
+app.use("/api/product", ProductRoutes);
+
 app.use(unauthorizedHandler);
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
-
-
-app.use("/api/clientes", clientRoutes);
 
 
 
