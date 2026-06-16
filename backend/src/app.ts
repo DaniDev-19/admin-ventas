@@ -7,13 +7,17 @@ import { procesamientoMiddleware } from './middleware/procesamiento';
 import { notFoundHandler, unauthorizedHandler, globalErrorHandler } from './middleware/global_errors';
 import dbMiddleware from './middleware/db_conex';
 
+import clientRoutes from "./routes/clientes.routes";
+
+
 const app = express();
 
 app.use(helmet(helmetConfig));
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(dbMiddleware);
 app.use(procesamientoMiddleware);
+app.use(dbMiddleware);
+
 app.get("/", (req, res) => {
   const date = new Date();
   const start = req.startTime ?? date;
@@ -29,6 +33,11 @@ app.get("/", (req, res) => {
 app.use(unauthorizedHandler);
 app.use(notFoundHandler);
 app.use(globalErrorHandler);
+
+
+app.use("/api/clientes", clientRoutes);
+
+
 
 export default app;
 
