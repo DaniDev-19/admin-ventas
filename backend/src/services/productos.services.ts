@@ -1,9 +1,6 @@
 import type { PrismaClient } from "../generated/prisma/client";
 import { createProductSchema, updateProductSchema } from '../schemas/productos.schema';
-
-class ValidationError extends Error { constructor(public details: any) { super("Validation"); } }
-class NotFoundError extends Error{}
-class ConflictError extends Error{}
+import { ValidationError, NotFoundError, ConflictError } from '../utils/errors';
 
 export class ProductService {
     constructor(private db: PrismaClient) {}
@@ -19,11 +16,12 @@ export class ProductService {
         const skip = (page - 1) * limit;
         const where: any = {};
         if (opts?.status) where.status = opts.status;
-        if (opts?.search)
+        if (opts?.search) {
             where.OR = [
-        { nombre: { contains: opts?.search, mode: "insensitive"} }, 
-        { cedula: { contains: opts.search } },
-    ];
+                { nombre: { contains: opts.search, mode: "insensitive" } },
+                { categoria: { contains: opts.search, mode: "insensitive" } },
+            ];
+        }
     const [items, total] = await this.db.$transaction([
         this.db.productos.findMany({
             where, 
@@ -38,13 +36,13 @@ export class ProductService {
 
 async findByid(id: number) {
     const productItem = await this.db.productos.findUnique({ where: { id } });
-    if(!productItem) throw new ValidationError("Producto no encontrado");
+    if(!productItem) throw new NotFoundError("Producto no encontrado");
     return productItem;
 }
 
 async create(input: unknown) {
     const parsed = createProductSchema.safeParse(input);
-    if (!parsed.success) throw new ValidationError(parsed.error.flatten());
+    if (!parsed.success) throw new ValidationError("Datos de producto inválidos", parsed.error.flatten());
     const data = parsed.data;
     const nombreNormalizado = data.nombre?.trim();
     const exists = await this.db.productos.findFirst({
@@ -57,7 +55,7 @@ async create(input: unknown) {
 
 async update(id: number, input: unknown) {
     const parsed = updateProductSchema.safeParse(input);
-    if(!parsed.success) throw new ValidationError(parsed.error.flatten());
+    if(!parsed.success) throw new ValidationError("Datos de producto inválidos", parsed.error.flatten());
     const data: any = parsed.data;
     const product = await this.db.productos.findUnique({
         where: { id }
@@ -74,7 +72,7 @@ async update(id: number, input: unknown) {
         if(exists) throw new ConflictError("Ya existe un producto con ese nombre ");
         data.nombre = nombreNormalizado;
     }
-    if (data.price_usd !== undefined) data.price_usd = Number(data.price_usd);
+    if (data.precio_usd !== undefined) data.precio_usd = Number(data.precio_usd);
     if (data.stock !== undefined) data.stock = Number(data.stock);
 
     const update = await this.db.productos.update({
@@ -86,7 +84,7 @@ async update(id: number, input: unknown) {
 
 async delete (id: number) {
     const product = await this.db.productos.findUnique({ where: { id } });
-    if (!product) throw new ValidationError("Producto no encontrado");
+    if (!product) throw new NotFoundError("Producto no encontrado");
 
     const trashkan = await this.db.productos.delete({
         where: { id }

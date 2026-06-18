@@ -5,5 +5,10 @@ declare module "express-serve-static-core" {
   interface Request {
     startTime?: Date;
     prisma?: PrismaClient;
+    user?: {
+      id: number;
+      username: string;
+      rol: string;
+    };
   }
 }

@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ProductService } from '../services/productos.services';
 import { enrichAndNext } from '../utils/nextError';
-import { duration } from 'zod/v4/classic/iso.cjs';
-import { create } from 'node:domain';
 
 export const getProductsAll = async (req: Request, res: Response, next: NextFunction) => {
     try {

@@ -10,6 +10,9 @@ import dbMiddleware from './middleware/db_conex';
 import clientRoutes from "./routes/clientes.routes";
 import ProductRoutes from "./routes/product.routes";
 import tasasRoutes from './routes/tasas.routes'
+import ventasRoutes from './routes/ventas.routes'
+import reportsRoutes from './routes/reports.routes'
+import authRoutes from './routes/auth.routes'
 
 const app = express();
 
@@ -34,6 +37,9 @@ app.get("/", (req, res) => {
 app.use("/api/clients", clientRoutes);
 app.use("/api/product", ProductRoutes);
 app.use("/api/tasas", tasasRoutes);
+app.use('/api/ventas', ventasRoutes);
+app.use('/api/reports', reportsRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use(unauthorizedHandler);
 app.use(notFoundHandler);

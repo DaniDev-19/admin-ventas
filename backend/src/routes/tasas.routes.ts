@@ -1,16 +1,17 @@
 import { Router } from 'express';
 import { getLatestTasa, refreshTasas } from '../controllers/tasas.controller';
-import { ValidateSchema } from '../middleware/validateSchema';
-import { createTasaMonedaSchema } from '../schemas/tasa_moneda.schema';
+import authMiddleware from '../middleware/auth';
 
 const router = Router()
 
 router
-    .route('/')
+    .route('/latest')
     .get(getLatestTasa);
 
 router
     .route('/refresh')
-    .post(ValidateSchema(createTasaMonedaSchema), refreshTasas);
+    .post(authMiddleware, refreshTasas);
 
 export default router
+
+

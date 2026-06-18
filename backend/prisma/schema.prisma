@@ -12,7 +12,7 @@ model clientes {
   cedula   String   @unique @db.VarChar(50)
   nombre   String?  @db.VarChar(250)
   telefono String?  @db.VarChar(50)
-  status   String   @default("pago_pendiente") @db.VarChar(50)
+  status   String   @default("activo") @db.VarChar(50)
   ventas   ventas[]
 }
 
@@ -47,7 +47,25 @@ model ventas {
   status          String      @default("no_pagada") @db.VarChar(50)
   created_at      DateTime?   @default(now()) @db.Timestamptz(6)
   updated_at      DateTime?   @default(now()) @db.Timestamptz(6)
-  clientes        clientes    @relation(fields: [clientes_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_c_compra")
-  productos       productos   @relation(fields: [productos_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_p_venta")
-  tasa_moneda     tasa_moneda @relation(fields: [tasa_moneda_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tasas_cambio")
+  clientes        clientes    @relation(fields: [clientes_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "fk_c_compra")
+  productos       productos   @relation(fields: [productos_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "fk_p_venta")
+  tasa_moneda     tasa_moneda @relation(fields: [tasa_moneda_id], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "fk_tasas_cambio")
 }
+
+model ventas_idempotency {
+  key        String    @id @db.VarChar(255)
+  venta_id   Int?
+  status     String?   @db.VarChar(50)
+  response   Json?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model usuarios {
+  id         Int       @id @default(autoincrement())
+  username   String    @unique @db.VarChar(50)
+  password   String    @db.VarChar(255)
+  nombre     String?   @db.VarChar(250)
+  rol        String    @default("admin") @db.VarChar(50)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+

@@ -1,9 +1,6 @@
 import type { PrismaClient } from "../generated/prisma/client";
 import { clientesSchema, updateClientesSchema } from '../schemas/clientes.schema';
-
-class ValidationError extends Error { constructor(public details: any) { super("Validation"); } }
-class NotFoundError extends Error{}
-class ConflictError extends Error{}
+import { ValidationError, NotFoundError, ConflictError } from '../utils/errors';
 
 export class ClientesService {
   constructor(private db: PrismaClient) {}
@@ -44,7 +41,7 @@ export class ClientesService {
 
   async create(input: unknown) {
     const parsed = clientesSchema.safeParse(input);
-    if (!parsed.success) throw new ValidationError(parsed.error.flatten());
+    if (!parsed.success) throw new ValidationError("Datos de cliente inválidos", parsed.error.flatten());
     const data = parsed.data;
     const exists = await this.db.clientes.findUnique({
       where: { cedula: data.cedula },
@@ -56,7 +53,7 @@ export class ClientesService {
 
   async update(id: number, input: unknown) {
     const parsed = updateClientesSchema.safeParse(input);
-    if (!parsed.success) throw new ValidationError(parsed.error.flatten());
+    if (!parsed.success) throw new ValidationError("Datos de cliente inválidos", parsed.error.flatten());
     const data = parsed.data;
     if (data.cedula) {
       const other = await this.db.clientes.findUnique({
@@ -73,7 +70,7 @@ export class ClientesService {
     if (!exist) throw new NotFoundError("Cliente no encontrado");
     const clienteItem = await this.db.clientes.delete({
       where: { id },
-      select: { id: true, nombre: true, success: true },
+      select: { id: true, nombre: true },
     });
     return clienteItem;
   }
