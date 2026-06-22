@@ -3,7 +3,7 @@ import { clientesSchema, updateClientesSchema } from '../schemas/clientes.schema
 import { ValidationError, NotFoundError, ConflictError } from '../utils/errors';
 
 export class ClientesService {
-  constructor(private db: PrismaClient) {}
+  constructor(private db: PrismaClient) { }
 
   async findAll(opts?: {
     page?: number;
@@ -59,7 +59,7 @@ export class ClientesService {
       const other = await this.db.clientes.findUnique({
         where: { cedula: data.cedula },
       });
-      if (other) throw new ConflictError("Cédula en uso por otro cliente");
+      if (other && other.id !== id) throw new ConflictError("Cédula en uso por otro cliente");
     }
     const clienteItem = await this.db.clientes.update({ where: { id }, data });
     return clienteItem;

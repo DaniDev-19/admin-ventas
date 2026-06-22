@@ -1,10 +1,10 @@
-import { fetchAndSaveTasasFromDolarApi } from './tasa_moneda.services';
+import { fetchAndSaveTasasFromDolarApi } from './tasa_moneda.service';
 import cron from 'node-cron';
 
 let task: any = null
 
 export function startTasaScheduler(cronExpr = process.env.TASA_CRON ?? '0 * * * *') {
-  
+
   void fetchAndSaveTasasFromDolarApi().catch((e) => console.error(e))
 
   if (task) task.stop()

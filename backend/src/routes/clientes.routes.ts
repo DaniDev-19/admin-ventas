@@ -1,9 +1,12 @@
 import { Router } from 'express';
-import * as ClientController from '../controllers/clientes.controller';
-import { validateZod } from '../middleware/validateZod';
+import authMiddleware from '../middleware/auth';
+import validateZod from '../middleware/validateZod';
 import { clientesSchema, updateClientesSchema } from '../schemas/clientes.schema';
+import * as ClientController from '../controllers/clientes.controller';
 
 const router = Router();
+
+router.use(authMiddleware);
 
 router
     .route("/")

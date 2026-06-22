@@ -121,6 +121,18 @@ export class VentasService {
 
     return result
   }
+
+  async update(id: number, input: { status: string }) {
+    const exist = await this.db.ventas.findUnique({ where: { id } })
+    if (!exist) throw new NotFoundError('Venta no encontrada')
+
+    const updated = await this.db.ventas.update({
+      where: { id },
+      data: { status: input.status }
+    })
+    return updated
+  }
 }
 
 export default VentasService
+

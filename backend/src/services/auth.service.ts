@@ -30,7 +30,7 @@ export class AuthService {
         username,
         password: hashedPassword,
         nombre,
-        rol: rol || 'admin'
+        rol: rol || 'vendedor'
       },
       select: {
         id: true,
@@ -54,6 +54,11 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedError('Credenciales incorrectas');
+    }
+
+    // Verificar si el usuario está inhabilitado
+    if (user.status === 'inactivo') {
+      throw new UnauthorizedError('Usuario inhabilitado. Por favor, contacte al administrador.');
     }
 
     // Verificar contraseña

@@ -10,12 +10,14 @@ export class ProductService {
         limit?: number;
         search?: string;
         status?: string;
+        categoria?: string;
     }) {
         const page = Math.max(opts?.page ?? 1, 1);
         const limit = Math.min(Math.max(opts?.limit ?? 20, 1), 100);
         const skip = (page - 1) * limit;
         const where: any = {};
         if (opts?.status) where.status = opts.status;
+        if (opts?.categoria) where.categoria = opts.categoria;
         if (opts?.search) {
             where.OR = [
                 { nombre: { contains: opts.search, mode: "insensitive" } },

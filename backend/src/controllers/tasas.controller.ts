@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { enrichAndNext } from '../utils/nextError'
-import { fetchAndSaveTasasFromDolarApi } from '../services/tasa_moneda.services'
+import { fetchAndSaveTasasFromDolarApi } from '../services/tasa_moneda.service'
 
 export const getLatestTasa = async (req: Request, res: Response, next: NextFunction) => {
   try {

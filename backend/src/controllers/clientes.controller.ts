@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ClientesService } from '../services/clientes.services';
+import { ClientesService } from '../services/clientes.service';
 import { enrichAndNext } from '../utils/nextError';
 
 export const getClientesAll = async (req: Request, res: Response, next: NextFunction) => {

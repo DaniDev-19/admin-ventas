@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ProductService } from '../services/productos.services';
+import { ProductService } from '../services/productos.service';
 import { enrichAndNext } from '../utils/nextError';
 
 export const getProductsAll = async (req: Request, res: Response, next: NextFunction) => {
@@ -8,12 +8,13 @@ export const getProductsAll = async (req: Request, res: Response, next: NextFunc
         const prisma = req.prisma;
         if (!prisma) throw new Error("database the client not found in request");
         const service = new ProductService(prisma);
-        const { page, limit, search, status } = req.query;
+        const { page, limit, search, status, categoria } = req.query;
         const result = await service.findAll({
             page: Number(page) || 1,
             limit: Number(limit) || 20,
             search: typeof search === 'string' ? search : undefined,
             status: typeof status === 'string' ? status : undefined,
+            categoria: typeof categoria === 'string' ? categoria : undefined,
         });
         res.status(200).json({
             status: 'success',

@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import * as ReportsController from '../controllers/reports.controller';
 import authMiddleware from '../middleware/auth';
+import checkRoles from '../middleware/checkRoles';
 
 const router = Router();
 
-// Todas las rutas de reportes requieren autenticación por JWT
+// Todas las rutas de reportes requieren autenticación por JWT y rol de admin o supervisor
 router.use(authMiddleware);
+router.use(checkRoles(['admin', 'supervisor']));
 
 router.get('/sales/excel', ReportsController.exportSalesExcel);
 router.get('/sales/pdf', ReportsController.exportSalesPdf);

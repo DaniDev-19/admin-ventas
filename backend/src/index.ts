@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import app from './app';
 import { prisma } from './config/prisma';
 import { startTasaScheduler } from './services/tasa_moneda.scheduler';
@@ -16,7 +19,7 @@ async function server() {
         console.log('DataBase connected successfully', result);
 
         app.listen(PORT, () => {
-            if(process.env.NODE_ENV === 'development') {
+            if (process.env.NODE_ENV === 'development') {
                 console.log('Running in development mode');
                 console.log(`Server running on port: http://localhost:${PORT}`);
             } else {
@@ -25,10 +28,11 @@ async function server() {
             }
         });
         startTasaScheduler()
-    }catch (error) {
+    } catch (error) {
         console.error('Error connecting to the database:', error);
         process.exit(1);
     }
 }
 
 server();
+// Trigger reload after prisma generation

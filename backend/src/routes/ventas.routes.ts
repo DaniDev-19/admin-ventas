@@ -1,9 +1,12 @@
 import { Router } from 'express'
-import { createVenta, getVentaById, getAllVentas, deleteVenta, deleteVentaNoRestore } from '../controllers/ventas.controller'
+import { createVenta, getVentaById, getAllVentas, deleteVenta, deleteVentaNoRestore, updateVenta } from '../controllers/ventas.controller'
 import validateZod from '../middleware/validateZod'
-import { createVentaSchema } from '../schemas/ventas.schema'
+import { createVentaSchema, updateVentaSchema } from '../schemas/ventas.schema'
+import authMiddleware from '../middleware/auth'
 
 const router = Router()
+
+router.use(authMiddleware)
 
 router
   .route('/')
@@ -13,6 +16,7 @@ router
 router
   .route('/:id')
   .get(getVentaById)
+  .put(validateZod(updateVentaSchema), updateVenta)
   .delete(deleteVenta)
 
 router

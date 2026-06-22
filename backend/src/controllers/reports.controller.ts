@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ReportsService } from '../services/reports.services';
+import { ReportsService } from '../services/reports.service';
 import { generateExcelReport, ExcelColumnOption } from '../utils/excel.utils';
 import { generatePdfReport, PdfColumnOption } from '../utils/pdf.utils';
 import { enrichAndNext } from '../utils/nextError';

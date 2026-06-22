@@ -1,23 +1,26 @@
-// Try to load PostgreSQL adapter for Prisma client when available.
+import { PrismaClient } from "../generated/prisma/client";
+
 let adapter: any | undefined;
-// Prefer the 'library' engine when not explicitly set to avoid requiring an adapter.
+
 if (!process.env.PRISMA_CLIENT_ENGINE_TYPE) {
     process.env.PRISMA_CLIENT_ENGINE_TYPE = "library";
 }
-try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { PrismaPg } = require("@prisma/adapter-pg");
-    adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-} catch (e) {
-    // adapter not installed — Prisma will require adapter or accelerateUrl if engine type is 'client'
-    adapter = undefined;
+
+const dbUrl = process.env.DATABASE_URL || "";
+const isAccelerate = dbUrl.startsWith("prisma://");
+
+if (!isAccelerate && dbUrl) {
+    try {
+        const { Pool } = require("pg");       
+        const { PrismaPg } = require("@prisma/adapter-pg");
+        const pool = new Pool({ connectionString: dbUrl });
+        adapter = new PrismaPg(pool);
+    } catch (e) {
+        adapter = undefined;
+    }
 }
 
-import { PrismaClient } from "../generated/prisma/client";
-
 declare global {
-    // Evita múltiples instancias durante el desarrollo (nodemon/hot-reload)
-    // eslint-disable-next-line no-var
     var prisma: PrismaClient | undefined;
 }
 
@@ -38,4 +41,3 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export default prisma;
-

@@ -15,7 +15,7 @@ export const registerSchema = z.object({
     .optional(),
   rol: z
     .string()
-    .default('admin')
+    .default('vendedor')
     .optional(),
 });
 
