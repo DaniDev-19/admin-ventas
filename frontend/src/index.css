@@ -1,68 +1,123 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import "tailwindcss";
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-100 min-h-screen antialiased;
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   }
-  a:hover {
-    color: #747bff;
+}
+
+/* Custom premium styles */
+.glass-panel {
+  @apply bg-slate-900/98 backdrop-blur-2xl border border-slate-800/80 shadow-2xl;
+}
+
+.glass-card {
+  @apply bg-slate-900/40 backdrop-blur-md border border-slate-800/50 hover:border-slate-700/60 transition-all duration-300 shadow-lg;
+}
+
+.glass-input {
+  @apply bg-slate-950/60 border border-slate-800 focus:border-emerald-500/80 focus:ring-2 focus:ring-emerald-500/20 text-slate-100 placeholder-slate-500 rounded-lg py-2.5 px-4 outline-none transition-all duration-200;
+}
+
+input.pl-10, select.pl-10 {
+  padding-left: 2.5rem;
+}
+
+input.pl-9, select.pl-9 {
+  padding-left: 2.25rem;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-semibold px-5 py-2.5 rounded-lg shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200 cursor-pointer flex items-center justify-center gap-2;
+}
+
+.btn-secondary {
+  @apply bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 font-medium px-5 py-2.5 rounded-lg active:scale-[0.98] transition-all duration-200 cursor-pointer flex items-center justify-center gap-2;
+}
+
+.btn-danger {
+  @apply bg-rose-500/10 hover:bg-rose-500/25 border border-rose-500/30 hover:border-rose-500/50 text-rose-400 font-semibold px-5 py-2.5 rounded-lg active:scale-[0.98] transition-all duration-200 cursor-pointer flex items-center justify-center gap-2;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-950;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 rounded-full hover:bg-slate-700 transition-colors;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%) scale(0.95);
+    opacity: 0;
   }
-  button {
-    background-color: #f9f9f9;
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
   }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Thin scrollbar variant for cart panels */
+.scrollbar-cart::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar-cart::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-cart::-webkit-scrollbar-thumb {
+  @apply bg-slate-800/60 rounded-full;
+}
+
+.scrollbar-cart::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-700;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Scale-in animation for modals */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.25s ease-out forwards;
+}
+
+/* Ticket preview width for printing/preview (use mm to match printer width) */
+.ticket-width-80mm {
+  width: 80mm;
+}
+
+.ticket-preview-container {
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+}
+
+.ticket-iframe {
+  width: 80mm;
+  height: 520px;
+  border: none;
+  display: block;
 }
